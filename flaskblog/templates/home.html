@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for post in posts.items %}
+        <article class="media content-section">
+          <a href="{{ url_for('users.user_posts', username=post.author.username) }}"><img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}"></a>
+          <div class="media-body">
+            <h2 style="font-family: Nunito,sans-serif; color: #6C575D; font-size: 30px;"><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+            <div class="article-metadata">
+              <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }} by </small>
+              <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.name }}</a>
+            </div><br/>
+            <p style="font-family: Nunito,sans-serif; color: #6C575D;" class="article-content"> <strong>Problem : </strong>{{ post.problem }}</p>
+            <p style="font-family: Nunito,sans-serif; color: #6C575D;" class="article-content"><strong>Root Cause : </strong>{{ post.root_cause }}</p>
+            <p style="font-family: Nunito,sans-serif; color: #6C575D;" class="article-content"><strong>Description : </strong>{{ post.content }}</p>
+            <div>
+              <div class="d-flex flex-row fs-12">
+                 <!-- <a class="like p-1 cursor"><i class="mdi mdi-thumb-up mr-1"></i>
+                Like
+                </a> -->
+                <a style="font-size: 13px; text-decoration: none" href="{{ url_for('posts.post', post_id=post.id) }}" class="like p-1 cursor"><i class="mdi mdi-comment-eye mr-1"></i>View Comments</a>
+              </div>
+
+                <div id="comment-div" style="display: block;" class="col-md-8 mb-8">
+                    <form action="{{ url_for('posts.add_comment', post_id=post.id) }}" method="POST" class="form-inline" style="display: block;">
+                        {{ form.hidden_tag() }}
+                        <fieldset class="form-group">
+                            <div class="form-group">
+                                {% if form.comment.errors %}
+                                    {{ form.comment(class="form-control form-control-lg is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.comment.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.comment(style="font-size: 13px;", rows='1',cols='30', placeholder='Add Comment', class="form-control mt-2 mr-sm-2") }}
+                                {% endif %}
+                            </div>
+                            {{ form.submit(style="font-size: 13px;", class="mt-2 btn-sm btn btn-outline-info") }}
+                        </fieldset>
+                    </form>
+                </div>
+
+
+
+            </div>  
+            <br/>
+
+          </div>
+        </article>
+
+    {% endfor %}
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if posts.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
+{% endblock content %}
+
+

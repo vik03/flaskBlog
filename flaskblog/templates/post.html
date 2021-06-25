@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+  <article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+    <div class="media-body">
+      <h2 style="font-family: Nunito,sans-serif; color: #6C575D;" class="article-title">{{ post.title }}</h2>
+      <div class="article-metadata">
+        <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }} by </small>
+        <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.name }}</a>
+        {% if post.author == current_user %}
+          <div>
+            <a class="align-right btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
+            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+            <a class="align-right btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.new_comment', post_id=post.id) }}">Comment</a>
+          </div><br/>
+          {% else %}
+          <div>
+            <a class="align-right btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.new_comment', post_id=post.id) }}">Comment</a>
+          </div>
+        {% endif %}
+      </div><br/>
+      
+      <p style="font-family: Nunito,sans-serif; color: #6C575D;" class="article-content"><strong>Problem : </strong>{{ post.problem }}</p>
+      <p style="font-family: Nunito,sans-serif; color: #6C575D;" class="article-content"><strong>Root Cause : </strong>{{ post.root_cause }}</p>
+      <p style="font-family: Nunito,sans-serif; color: #6C575D;" class="article-content"><strong>Description : </strong>{{ post.content }}</p>
+      <br/>
+
+      <small class="text-muted">Comments</small>
+
+      {% for comment in comments %}
+        <li class="media">
+          <a href="{{ url_for('users.user_posts', username=post.author.username) }}"><img class="rounded-circle comment-img" src="{{ url_for('static', filename='profile_pics/' + comment.commenter.image_file) }}">
+          </a>
+          <div class="media-body">
+              <p><a href="{{ url_for('users.user_posts', username=post.author.username) }}" style="font-size: 12px;" class="text-success">@{{ comment.commenter.name }}
+                </a>
+                <float style="font-family: Nunito,sans-serif; color: #6C575D; font-size: 11px;">
+                  {{ comment.comment }}
+                  </float>
+                <float style="font-family: Nunito,sans-serif; color: #6C575D;font-size: 9px;" class="float-right text-muted">{{ comment.date_posted.strftime('%Y-%m-%d %H:%M' ) }}</p>
+              </float>
+          </div>
+        </li>
+      {% endfor %}
+    </div>
+  </article>
+  <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Post?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

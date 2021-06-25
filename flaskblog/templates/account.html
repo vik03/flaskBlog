@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+      <div class="media">
+        <img class="rounded-circle account-img" src="{{ image_file }}">
+        <div class="media-body">
+            
+        </div>
+      </div>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4"></legend>
+                <div class="form-group">
+                    <h5 style="font-family: Nunito,sans-serif; color: #6C575D; font-size: 20px;" class="account-heading text-middle"> <strong>Name :</strong> {{ current_user.name }}</h5>
+                    <h5 style="font-family: Nunito,sans-serif; color: #6C575D; font-size: 20px;" class="account-heading text-middle"> <strong>Signum :</strong> {{ current_user.signum }}</h5>
+                    <h5 style="font-family: Nunito,sans-serif; color: #6C575D; font-size: 20px;" class="account-heading text-middle"> <strong>Email :</strong> {{ current_user.username }}</h5>
+                    <h5 style="font-family: Nunito,sans-serif; color: #6C575D; font-size: 20px;" class="account-heading text-middle"> <strong>Total Posts :</strong> 
+                    {{ current_user_post_count }}</h5>
+                    <br/>
+                    {{ form.picture.label() }}
+                    {{ form.picture(class="form-control-file") }}
+                    {% if form.picture.errors %}
+                        {% for error in form.picture.errors %}
+                            <span class="text-danger">{{ error }}</span></br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}
